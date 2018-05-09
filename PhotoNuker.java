@@ -2,14 +2,50 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.io.File; //describes locations in your file system
+import java.io.FileReader; // this connects to a file
+import java.io.FileWriter; //this is unbuffered IO (only one char at a time, expensive system calls and also slow) - going to the store for one egg at a time
+import java.io.BufferedReader; //this does buffered IO. (draws stuff out of a sector of hard memory that has been moved to RAM) - buying a carton of eggs at the store and getting ur eggs from the fridge
+import java.io.BufferedWriter; //
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Menu;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.image.Image;
 public class PhotoNuker extends Application
 {
+    private MenuBar mbar;
     public PhotoNuker()
     {
+        mbar = new MenuBar();
     }
     @Override
     public void init()
     {
+    }
+
+    @Override
+    public void start(Stage primary)
+    {
+        BorderPane bp = new BorderPane();
+        bp.setTop(mbar);
+        makeMenus();
+        Scene s = new Scene(bp, 500, 500);
+        primary.setScene(s);
+        primary.setTitle("PhotoNuker Java Final Project");
+        primary.show();
     }
     private void makeMenus() {
         Menu fileMenu = new Menu("File");
@@ -29,7 +65,26 @@ public class PhotoNuker extends Application
         bItem.setGraphic(openView);
         bItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
 
-        newItem.setOnAction( e -> {
+        Image openIcon = new Image(getClass().getResourceAsStream("B.png"));
+        ImageView openView = new ImageView(openIcon);
+        openView.setFitWidth(15);
+        openView.setFitHeight(15);
+        MenuItem  bItem = new MenuItem("");
+        bItem.setGraphic(openView);
+        bItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
+
+        Image openIcon = new Image(getClass().getResourceAsStream("B.png"));
+        ImageView openView = new ImageView(openIcon);
+        openView.setFitWidth(15);
+        openView.setFitHeight(15);
+        MenuItem  bItem = new MenuItem("");
+        bItem.setGraphic(openView);
+        bItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
+
+
+
+
+        /*newItem.setOnAction( e -> {
             if(!windowContentsSaved) {
                 rescueWindow();
             }
@@ -89,19 +144,13 @@ public class PhotoNuker extends Application
                     System.err.printf("IOException occured\n");
                 }
             }
-        });
+        });*/
 
         MenuItem quitItem = new MenuItem("Quit");
         quitItem.setOnAction( e -> Platform.exit());
         mbar.getMenus().addAll(fileMenu, stickerMenu);
         fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
         stickerMenu.getItems().addAll(bItem);
-    }
-    @Override
-    public void start(Stage primary)
-    {
-        primary.setTitle("PhotoNuker Java Final Project");
-        primary.show();
     }
     @Override
     public void stop()
