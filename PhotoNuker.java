@@ -14,7 +14,7 @@ public class PhotoNuker extends Application
     @Override
     public void start(Stage primary)
     {
-        primary.setTitle("PhotoNuker");
+        primary.setTitle("PhotoNuker Java Final Project");
         primary.show();
     }
     @Override
