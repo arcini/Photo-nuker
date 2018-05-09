@@ -65,21 +65,30 @@ public class PhotoNuker extends Application
         bItem.setGraphic(openView);
         bItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
 
-        Image openIcon = new Image(getClass().getResourceAsStream("B.png"));
-        ImageView openView = new ImageView(openIcon);
+        openIcon = new Image(getClass().getResourceAsStream("100.png"));
+        openView = new ImageView(openIcon);
         openView.setFitWidth(15);
         openView.setFitHeight(15);
-        MenuItem  bItem = new MenuItem("");
-        bItem.setGraphic(openView);
-        bItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
+        MenuItem  hundredItem = new MenuItem("");
+        hundredItem.setGraphic(openView);
+        hundredItem.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
 
-        Image openIcon = new Image(getClass().getResourceAsStream("B.png"));
-        ImageView openView = new ImageView(openIcon);
+        openIcon = new Image(getClass().getResourceAsStream("fire.png"));
+        openView = new ImageView(openIcon);
         openView.setFitWidth(15);
         openView.setFitHeight(15);
-        MenuItem  bItem = new MenuItem("");
-        bItem.setGraphic(openView);
-        bItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
+        MenuItem  fItem = new MenuItem("");
+        fItem.setGraphic(openView);
+        fItem.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
+
+        openIcon = new Image(getClass().getResourceAsStream("laughingemoji.png"));
+        openView = new ImageView(openIcon);
+        openView.setFitWidth(15);
+        openView.setFitHeight(15);
+        MenuItem  lItem = new MenuItem("");
+        lItem.setGraphic(openView);
+        lItem.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
+
 
 
 
@@ -150,7 +159,7 @@ public class PhotoNuker extends Application
         quitItem.setOnAction( e -> Platform.exit());
         mbar.getMenus().addAll(fileMenu, stickerMenu);
         fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
-        stickerMenu.getItems().addAll(bItem);
+        stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem);
     }
     @Override
     public void stop()
