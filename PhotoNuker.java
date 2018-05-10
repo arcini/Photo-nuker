@@ -44,6 +44,7 @@ public class PhotoNuker extends Application
         c = new Canvas(800,800);
         pen = c.getGraphicsContext2D();
         currentSticker = Optional.of(new Image(getClass().getResourceAsStream("B.png")));
+
     }
     @Override
     public void init()
@@ -81,6 +82,7 @@ public class PhotoNuker extends Application
 
         Menu stickerMenu = new Menu("Stickers");
 
+
         Image openIcon = new Image(getClass().getResourceAsStream("B.png"));
         ImageView openView = new ImageView(openIcon);
         openView.setFitWidth(15);
@@ -88,6 +90,10 @@ public class PhotoNuker extends Application
         MenuItem  bItem = new MenuItem("");
         bItem.setGraphic(openView);
         bItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
+
+        bItem.setOnAction( e -> {
+          currentSticker = Optional.of(new Image(getClass().getResourceAsStream("B.png")));
+        });
 
         openIcon = new Image(getClass().getResourceAsStream("100.png"));
         openView = new ImageView(openIcon);
@@ -97,6 +103,10 @@ public class PhotoNuker extends Application
         hundredItem.setGraphic(openView);
         hundredItem.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
 
+        hundredItem.setOnAction( e -> {
+          currentSticker = Optional.of(new Image(getClass().getResourceAsStream("100.png")));
+        });
+
         openIcon = new Image(getClass().getResourceAsStream("fire.png"));
         openView = new ImageView(openIcon);
         openView.setFitWidth(15);
@@ -104,6 +114,12 @@ public class PhotoNuker extends Application
         MenuItem  fItem = new MenuItem("");
         fItem.setGraphic(openView);
         fItem.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
+
+
+        fItem.setOnAction( e -> {
+          currentSticker = Optional.of(new Image(getClass().getResourceAsStream("fire.png")));
+        });
+
 
         openIcon = new Image(getClass().getResourceAsStream("laughingemoji.png"));
         openView = new ImageView(openIcon);
@@ -113,6 +129,10 @@ public class PhotoNuker extends Application
         lItem.setGraphic(openView);
         lItem.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN));
 
+
+        lItem.setOnAction( e -> {
+          currentSticker = Optional.of(new Image(getClass().getResourceAsStream("laughingemoji.png")));
+        });
 
 
 
