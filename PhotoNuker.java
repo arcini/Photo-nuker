@@ -43,7 +43,8 @@ public class PhotoNuker extends Application
         mbar = new MenuBar();
         c = new Canvas(800,800);
         pen = c.getGraphicsContext2D();
-        currentSticker = Optional.of(new Image(getClass().getResourceAsStream("B.png")));
+        currentSize = OptionalInt.of(25);
+
 
     }
     @Override
@@ -68,7 +69,7 @@ public class PhotoNuker extends Application
         c.setOnMouseClicked( e -> {
             if(currentSticker.isPresent()) {
                 System.out.println("drew an image");
-                pen.drawImage(currentSticker.get(),0,0,currentSticker.get().getWidth(),currentSticker.get().getWidth(),e.getX()-25, e.getY()-25,50,50);
+                pen.drawImage(currentSticker.get(),0,0,currentSticker.get().getWidth(),currentSticker.get().getWidth(),e.getX()-currentSize.getAsInt()/2, e.getY()-currentSize.getAsInt()/2,currentSize.getAsInt(),currentSize.getAsInt());
             }
         });
     }
