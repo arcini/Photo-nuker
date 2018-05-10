@@ -68,7 +68,6 @@ public class PhotoNuker extends Application
 
         c.setOnMouseClicked( e -> {
             if(currentSticker.isPresent()) {
-                System.out.println("drew an image");
                 pen.drawImage(currentSticker.get(),0,0,currentSticker.get().getWidth(),currentSticker.get().getWidth(),e.getX()-currentSize.getAsInt()/2, e.getY()-currentSize.getAsInt()/2,currentSize.getAsInt(),currentSize.getAsInt());
             }
         });
@@ -133,6 +132,18 @@ public class PhotoNuker extends Application
 
         lItem.setOnAction( e -> {
           currentSticker = Optional.of(new Image(getClass().getResourceAsStream("laughingemoji.png")));
+        });
+
+        openIcon = new Image(getClass().getResourceAsStream("ok.png"));
+        openView = new ImageView(openIcon);
+        openView.setFitWidth(15);
+        openView.setFitHeight(15);
+        MenuItem  OItem = new MenuItem("");
+        OItem.setGraphic(openView);
+        OItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
+
+        OItem.setOnAction( e -> {
+          currentSticker = Optional.of(new Image(getClass().getResourceAsStream("ok.png")));
         });
 
 
@@ -204,7 +215,7 @@ public class PhotoNuker extends Application
         quitItem.setOnAction( e -> Platform.exit());
         mbar.getMenus().addAll(fileMenu, stickerMenu);
         fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
-        stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem);
+        stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
     }
     @Override
     public void stop()
