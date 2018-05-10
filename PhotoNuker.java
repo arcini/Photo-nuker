@@ -39,6 +39,15 @@ public class PhotoNuker extends Application
     @Override
     public void start(Stage primary)
     {
+
+        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                gc1.fillOval(e.getX(),e.getY(),20,20);
+            }
+        });
+
+
         BorderPane bp = new BorderPane();
         bp.setTop(mbar);
         makeMenus();
