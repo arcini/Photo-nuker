@@ -20,16 +20,30 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
 import javafx.scene.image.ImageView;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.event.EventHandler;
+import javafx.scene.canvas.GraphicsContext;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 public class PhotoNuker extends Application
 {
+    private Optional<Image> currentSticker;
+    private OptionalInt currentSize;
     private MenuBar mbar;
+    private Canvas c;
+    private GraphicsContext pen;
     public PhotoNuker()
     {
         mbar = new MenuBar();
+        c = new Canvas(800,800);
+        pen = c.getGraphicsContext2D();
+        currentSticker = Optional.of(new Image(getClass().getResourceAsStream("B.png")));
     }
     @Override
     public void init()
@@ -40,21 +54,22 @@ public class PhotoNuker extends Application
     public void start(Stage primary)
     {
 
-        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                gc1.fillOval(e.getX(),e.getY(),20,20);
-            }
-        });
-
 
         BorderPane bp = new BorderPane();
         bp.setTop(mbar);
+        bp.setCenter(c);
         makeMenus();
         Scene s = new Scene(bp, 500, 500);
         primary.setScene(s);
         primary.setTitle("PhotoNuker Java Final Project");
         primary.show();
+
+        c.setOnMouseClicked( e -> {
+            if(currentSticker.isPresent()) {
+                System.out.println("drew an image");
+                pen.drawImage(currentSticker.get(),0,0,currentSticker.get().getWidth(),currentSticker.get().getWidth(),e.getX()-25, e.getY()-25,50,50);
+            }
+        });
     }
     private void makeMenus() {
         Menu fileMenu = new Menu("File");
