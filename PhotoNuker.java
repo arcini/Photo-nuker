@@ -176,73 +176,103 @@ public class PhotoNuker extends Application
         OItem.setOnAction( e -> {
           currentSticker = Optional.of(new Image(getClass().getResourceAsStream("ok.png")));
         });
-        /*newItem.setOnAction( e -> {
-            if(!windowContentsSaved) {
-                rescueWindow();
-            }
-            rescueWindow();
-        });
 
-        saveItem.setOnAction( e -> {
-            if(selectedFile == null) {
-                FileChooser fc = new FileChooser();
-                fc.setTitle("Save as...");
-                selectedFile = fc.showSaveDialog(primary);
 
-            } try {
-                pukeFile();
-                primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
-                windowContentsSaved = true;
-            } catch(IOException ex) {
-                System.err.printf("IOException occured\n");
-            }
 
-        });
-        saveAsItem.setOnAction( e -> {
-            FileChooser fc = new FileChooser();
-            fc.setTitle("Save as...");
-            selectedFile = fc.showSaveDialog(primary);
-            if (selectedFile != null) {
-                try {
-                    primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
-                    pukeFile();
-                    windowContentsSaved = true;
-                } catch(IOException ex) {
-                    System.err.printf("IOException occured\n");
-                }
-            }
-        });
-        openItem.setOnAction( e -> {
-            //rescues the window
-            //File chooser window ppops up
-            //user chooses file
-            //user hits cancel, do nothing
-            //if user opens file, put in textarea and display path to file in title bar
-            if(!windowContentsSaved) {
-                rescueWindow();
-            }
-            FileChooser fc = new FileChooser();
-            fc.setTitle("Open File");
-            selectedFile = fc.showOpenDialog(primary);
-            if(selectedFile != null) {
-                primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
-                try {
-                    String s = hooverFile();
-                    ta.setText(s);
-                    windowContentsSaved = true;
-                } catch (FileNotFoundException ex) {
-                    System.err.printf("File %s cannot be opened\n", selectedFile.getName());
-                } catch(IOException ex) {
-                    System.err.printf("IOException occured\n");
-                }
-            }
-        });*/
 
-        MenuItem quitItem = new MenuItem("Quit");
-        quitItem.setOnAction( e -> Platform.exit());
-        mbar.getMenus().addAll(fileMenu, stickerMenu);
-        fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
-        stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
+        Menu sizeMenu = new Menu("Size");
+                MenuItem smallSize = new MenuItem("15 px");
+                smallSize.setOnAction(e -> {
+                  currentSize = OptionalInt.of(15);
+                });
+
+                MenuItem mediumSize = new MenuItem("25 px");
+                mediumSize.setOnAction(e -> {
+                  currentSize = OptionalInt.of(25);
+                });
+
+                MenuItem largeSize = new MenuItem("50 px");
+                largeSize.setOnAction(e -> {
+                  currentSize = OptionalInt.of(50);
+                });
+
+                MenuItem extraLargeSize = new MenuItem("100 px");
+                extraLargeSize.setOnAction(e -> {
+                  currentSize = OptionalInt.of(100);
+                });
+
+
+
+
+
+                /*newItem.setOnAction( e -> {
+                    if(!windowContentsSaved) {
+                        rescueWindow();
+                    }
+                    rescueWindow();
+                });
+
+                saveItem.setOnAction( e -> {
+                    if(selectedFile == null) {
+                        FileChooser fc = new FileChooser();
+                        fc.setTitle("Save as...");
+                        selectedFile = fc.showSaveDialog(primary);
+
+                    } try {
+                        pukeFile();
+                        primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
+                        windowContentsSaved = true;
+                    } catch(IOException ex) {
+                        System.err.printf("IOException occured\n");
+                    }
+
+                });
+                saveAsItem.setOnAction( e -> {
+                    FileChooser fc = new FileChooser();
+                    fc.setTitle("Save as...");
+                    selectedFile = fc.showSaveDialog(primary);
+                    if (selectedFile != null) {
+                        try {
+                            primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
+                            pukeFile();
+                            windowContentsSaved = true;
+                        } catch(IOException ex) {
+                            System.err.printf("IOException occured\n");
+                        }
+                    }
+                });
+                openItem.setOnAction( e -> {
+                    //rescues the window
+                    //File chooser window ppops up
+                    //user chooses file
+                    //user hits cancel, do nothing
+                    //if user opens file, put in textarea and display path to file in title bar
+                    if(!windowContentsSaved) {
+                        rescueWindow();
+                    }
+                    FileChooser fc = new FileChooser();
+                    fc.setTitle("Open File");
+                    selectedFile = fc.showOpenDialog(primary);
+                    if(selectedFile != null) {
+                        primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
+                        try {
+                            String s = hooverFile();
+                            ta.setText(s);
+                            windowContentsSaved = true;
+                        } catch (FileNotFoundException ex) {
+                            System.err.printf("File %s cannot be opened\n", selectedFile.getName());
+                        } catch(IOException ex) {
+                            System.err.printf("IOException occured\n");
+                        }
+                    }
+                });*/
+
+                MenuItem quitItem = new MenuItem("Quit");
+                quitItem.setOnAction( e -> Platform.exit());
+                mbar.getMenus().addAll(fileMenu, stickerMenu, sizeMenu);
+                sizeMenu.getItems().addAll(smallSize, mediumSize, largeSize, extraLargeSize);
+                fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
+                stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
     }
     private String hooverFile() throws IOException
     {
