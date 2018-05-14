@@ -8,6 +8,7 @@ import java.io.FileWriter; //this is unbuffered IO (only one char at a time, exp
 import java.io.BufferedReader; //this does buffered IO. (draws stuff out of a sector of hard memory that has been moved to RAM) - buying a carton of eggs at the store and getting ur eggs from the fridge
 import java.io.BufferedWriter; //
 import java.io.FileNotFoundException;
+import javafx.stage.FileChooser;
 import java.io.IOException;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.MenuBar;
@@ -30,6 +31,7 @@ import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.io.Console;
 
 public class PhotoNuker extends Application
 {
@@ -38,15 +40,18 @@ public class PhotoNuker extends Application
     private MenuBar mbar;
     private Canvas c;
     private GraphicsContext pen;
+    private Stage primary;
+    private File selectedFile;
     public PhotoNuker()
     {
-        mbar = new MenuBar();
-        c = new Canvas(800,800);
-        pen = c.getGraphicsContext2D();
-        currentSize = OptionalInt.of(25);
-
-
+      mbar = new MenuBar();
+      c = new Canvas(800,800);
+      pen = c.getGraphicsContext2D();
+      currentSize = OptionalInt.of(25);
+      selectedFile = null;
     }
+
+
     @Override
     public void init()
     {
@@ -55,29 +60,55 @@ public class PhotoNuker extends Application
     @Override
     public void start(Stage primary)
     {
-
-
         BorderPane bp = new BorderPane();
         bp.setTop(mbar);
         bp.setCenter(c);
         makeMenus();
         Scene s = new Scene(bp, 500, 500);
+        System.out.println("prmary="+primary);
+        this.primary = primary;
         primary.setScene(s);
         primary.setTitle("PhotoNuker Java Final Project");
         primary.show();
 
         c.setOnMouseClicked( e -> {
-            if(currentSticker.isPresent()) {
+          System.out.println("currentSticker="+currentSticker);
+
+            if(currentSticker!=null && currentSticker.isPresent()) {
+              System.out.println("pen="+pen);
                 pen.drawImage(currentSticker.get(),0,0,currentSticker.get().getWidth(),currentSticker.get().getWidth(),e.getX()-currentSize.getAsInt()/2, e.getY()-currentSize.getAsInt()/2,currentSize.getAsInt(),currentSize.getAsInt());
             }
         });
     }
+
     private void makeMenus() {
         Menu fileMenu = new Menu("File");
         MenuItem newItem = new MenuItem("New");
         MenuItem openItem = new MenuItem("Open...");
         MenuItem saveItem = new MenuItem("Save");
         MenuItem saveAsItem = new MenuItem("Save As...");
+
+        newItem.setOnAction( e ->
+        {
+
+        });
+
+        openItem.setOnAction( e ->
+        {
+            //File chooser window pops up
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Open File");
+
+            //User choose file.
+            selectedFile = fc.showOpenDialog(primary);
+            if(selectedFile != null)
+            {
+                primary.setTitle("FileShower:" + selectedFile.getAbsolutePath());
+                //hooverFile();
+            }
+        });
+
+
 
 
         Menu stickerMenu = new Menu("Stickers");
@@ -145,10 +176,6 @@ public class PhotoNuker extends Application
         OItem.setOnAction( e -> {
           currentSticker = Optional.of(new Image(getClass().getResourceAsStream("ok.png")));
         });
-
-
-
-
         /*newItem.setOnAction( e -> {
             if(!windowContentsSaved) {
                 rescueWindow();
@@ -217,6 +244,19 @@ public class PhotoNuker extends Application
         fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
         stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
     }
+    private String hooverFile() throws IOException
+    {
+       BufferedReader br =
+           new BufferedReader(new FileReader(selectedFile));
+       StringBuffer sb = new StringBuffer();
+       String line;
+       while( ( line = br.readLine()) != null)
+       {
+           sb.append(line);
+       }
+       br.close();
+       return sb.toString();
+   }
     @Override
     public void stop()
     {
