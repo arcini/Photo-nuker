@@ -35,6 +35,7 @@ import java.io.Console;
 
 public class PhotoNuker extends Application
 {
+    private boolean windowContentsSaved;
     private Optional<Image> currentSticker;
     private OptionalInt currentSize;
     private MenuBar mbar;
@@ -49,6 +50,7 @@ public class PhotoNuker extends Application
       pen = c.getGraphicsContext2D();
       currentSize = OptionalInt.of(25);
       selectedFile = null;
+      windowContentsSaved = true;
     }
 
 
@@ -65,20 +67,43 @@ public class PhotoNuker extends Application
         bp.setCenter(c);
         makeMenus();
         Scene s = new Scene(bp, 500, 500);
-        System.out.println("prmary="+primary);
         this.primary = primary;
         primary.setScene(s);
         primary.setTitle("PhotoNuker Java Final Project");
         primary.show();
 
         c.setOnMouseClicked( e -> {
-          System.out.println("currentSticker="+currentSticker);
+            if (windowContentsSaved) {
+                windowContentsSaved = false;
+            }
 
             if(currentSticker!=null && currentSticker.isPresent()) {
               System.out.println("pen="+pen);
                 pen.drawImage(currentSticker.get(),0,0,currentSticker.get().getWidth(),currentSticker.get().getWidth(),e.getX()-currentSize.getAsInt()/2, e.getY()-currentSize.getAsInt()/2,currentSize.getAsInt(),currentSize.getAsInt());
             }
         });
+    }
+
+    private void rescueWindow() {
+        if(!windowContentsSaved) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setHeaderText("Save window contents?");
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if(result.get() == ButtonType.OK) {
+                if(selectedFile == null) {
+                    FileChooser fc = new FileChooser();
+                    fc.setTitle("Save as...");
+                    selectedFile = fc.showSaveDialog(primary);
+                } try {
+                    pukeFile();
+                    primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
+                    windowContentsSaved = true;
+                } catch(IOException ex) {
+                    System.err.printf("File %s cannot be opened.\n", selectedFile.getName());
+                }
+            }
+        }
     }
 
     private void makeMenus() {
@@ -95,6 +120,7 @@ public class PhotoNuker extends Application
 
         openItem.setOnAction( e ->
         {
+            rescueWindow();
             //File chooser window pops up
             FileChooser fc = new FileChooser();
             fc.setTitle("Open File");
@@ -104,8 +130,11 @@ public class PhotoNuker extends Application
             if(selectedFile != null)
             {
                 primary.setTitle("FileShower:" + selectedFile.getAbsolutePath());
-                //hooverFile();
+                Optional<Image> bckgrnd
             }
+
+            canvas.setWidth()
+            pen.drawImage();
         });
 
 
@@ -274,19 +303,7 @@ public class PhotoNuker extends Application
                 fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
                 stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
     }
-    private String hooverFile() throws IOException
-    {
-       BufferedReader br =
-           new BufferedReader(new FileReader(selectedFile));
-       StringBuffer sb = new StringBuffer();
-       String line;
-       while( ( line = br.readLine()) != null)
-       {
-           sb.append(line);
-       }
-       br.close();
-       return sb.toString();
-   }
+
     @Override
     public void stop()
     {
