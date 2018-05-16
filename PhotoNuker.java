@@ -32,6 +32,9 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.io.Console;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class PhotoNuker extends Application
 {
@@ -85,25 +88,7 @@ public class PhotoNuker extends Application
     }
 
     private void rescueWindow() {
-        if(!windowContentsSaved) {
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setHeaderText("Save window contents?");
-            Optional<ButtonType> result = alert.showAndWait();
 
-            if(result.get() == ButtonType.OK) {
-                if(selectedFile == null) {
-                    FileChooser fc = new FileChooser();
-                    fc.setTitle("Save as...");
-                    selectedFile = fc.showSaveDialog(primary);
-                } try {
-                    pukeFile();
-                    primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
-                    windowContentsSaved = true;
-                } catch(IOException ex) {
-                    System.err.printf("File %s cannot be opened.\n", selectedFile.getName());
-                }
-            }
-        }
     }
 
     private void makeMenus() {
@@ -120,21 +105,24 @@ public class PhotoNuker extends Application
 
         openItem.setOnAction( e ->
         {
-            rescueWindow();
             //File chooser window pops up
             FileChooser fc = new FileChooser();
             fc.setTitle("Open File");
+            FileChooser.ExtensionFilter ext = new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.jpeg", "*.png");
+            fc.getExtensionFilters().add(ext);
 
             //User choose file.
             selectedFile = fc.showOpenDialog(primary);
             if(selectedFile != null)
             {
                 primary.setTitle("FileShower:" + selectedFile.getAbsolutePath());
-                Optional<Image> bckgrnd
+                String pathName = Paths.get(System.getProperty("java.class.path")).relativize(selectedFile.toPath()).toString();
+                System.out.println(pathName);
+                Optional<Image> backgroundImg = Optional.of(new Image(getClass().getResourceAsStream(pathName)));
+                c.setWidth(backgroundImg.get().getWidth());
+                c.setHeight(backgroundImg.get().getHeight());
+                pen.drawImage(backgroundImg.get(), 0, 0, backgroundImg.get().getWidth(), backgroundImg.get().getHeight());
             }
-
-            canvas.setWidth()
-            pen.drawImage();
         });
 
 
