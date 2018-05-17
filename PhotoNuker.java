@@ -111,7 +111,7 @@ public class PhotoNuker extends Application
     private void rescueWindow() {
 
     }
-    private void nuke(){
+    private void nuke(int nukeLevel){
         //commenting to test other code
 
 
@@ -136,7 +136,7 @@ public class PhotoNuker extends Application
         MenuItem openItem = new MenuItem("Open...");
         MenuItem saveItem = new MenuItem("Save");
         MenuItem saveAsItem = new MenuItem("Save As...");
-        MenuItem filterItem = new MenuItem("Filters");
+
         newItem.setOnAction( e ->
         {
 
@@ -167,10 +167,6 @@ public class PhotoNuker extends Application
                     System.out.println("malformed url");
                 }
             }
-        });
-        filterItem.setOnAction( e ->
-        {
-
         });
 
 
@@ -237,7 +233,7 @@ public class PhotoNuker extends Application
         openView.setFitHeight(15);
         MenuItem  OItem = new MenuItem("");
         OItem.setGraphic(openView);
-        OItem.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN));
+        OItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
         OItem.setOnAction( e -> {
           currentSticker = Optional.of(new Image(getClass().getResourceAsStream("ok.png")));
@@ -247,98 +243,64 @@ public class PhotoNuker extends Application
 
 
         Menu sizeMenu = new Menu("Size");
-                MenuItem smallSize = new MenuItem("15 px");
-                smallSize.setOnAction(e -> {
-                  currentSize = OptionalInt.of(15);
-                });
+        MenuItem smallSize = new MenuItem("15 px");
+        smallSize.setOnAction(e -> {
+          currentSize = OptionalInt.of(15);
+        });
 
-                MenuItem mediumSize = new MenuItem("25 px");
-                mediumSize.setOnAction(e -> {
-                  currentSize = OptionalInt.of(25);
-                });
+        MenuItem mediumSize = new MenuItem("25 px");
+        mediumSize.setOnAction(e -> {
+          currentSize = OptionalInt.of(25);
+        });
 
-                MenuItem largeSize = new MenuItem("50 px");
-                largeSize.setOnAction(e -> {
-                  currentSize = OptionalInt.of(50);
-                });
+        MenuItem largeSize = new MenuItem("50 px");
+        largeSize.setOnAction(e -> {
+          currentSize = OptionalInt.of(50);
+        });
 
-                MenuItem extraLargeSize = new MenuItem("100 px");
-                extraLargeSize.setOnAction(e -> {
-                  currentSize = OptionalInt.of(100);
-                });
+        MenuItem extraLargeSize = new MenuItem("100 px");
+        extraLargeSize.setOnAction(e -> {
+          currentSize = OptionalInt.of(100);
+        });
 
+        Menu nukeMenu = new Menu("NUKE");
+        MenuItem nuke1 = new MenuItem("1");
+        nuke1.setOnAction( e -> {
+            nuke(1);
+        });
+        nuke1.setAccelerator(new KeyCodeCombination(KeyCode.1, KeyCombination.CONTROL_DOWN));
 
+        MenuItem nuke2 = new MenuItem("2");
+        nuke2.setOnAction( e -> {
+            nuke(2);
+        });
+        nuke2.setAccelerator(new KeyCodeCombination(KeyCode.2, KeyCombination.CONTROL_DOWN));
 
+        MenuItem nuke3 = new MenuItem("3");
+        nuke3.setOnAction( e -> {
+            nuke(3);
+        });
+        nuke3.setAccelerator(new KeyCodeCombination(KeyCode.3, KeyCombination.CONTROL_DOWN));
 
+        MenuItem nuke4 = new MenuItem("4");
+        nuke4.setOnAction( e -> {
+            nuke(4);
+        });
+        nuke4.setAccelerator(new KeyCodeCombination(KeyCode.4, KeyCombination.CONTROL_DOWN));
 
-                /*newItem.setOnAction( e -> {
-                    if(!windowContentsSaved) {
-                        rescueWindow();
-                    }
-                    rescueWindow();
-                });
+        MenuItem nuke5 = new MenuItem("5");
+        nuke5.setOnAction( e -> {
+            nuke(5);
+        });
+        nuke5.setAccelerator(new KeyCodeCombination(KeyCode.5, KeyCombination.CONTROL_DOWN));
 
-                saveItem.setOnAction( e -> {
-                    if(selectedFile == null) {
-                        FileChooser fc = new FileChooser();
-                        fc.setTitle("Save as...");
-                        selectedFile = fc.showSaveDialog(primary);
-
-                    } try {
-                        pukeFile();
-                        primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
-                        windowContentsSaved = true;
-                    } catch(IOException ex) {
-                        System.err.printf("IOException occured\n");
-                    }
-
-                });
-                saveAsItem.setOnAction( e -> {
-                    FileChooser fc = new FileChooser();
-                    fc.setTitle("Save as...");
-                    selectedFile = fc.showSaveDialog(primary);
-                    if (selectedFile != null) {
-                        try {
-                            primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
-                            pukeFile();
-                            windowContentsSaved = true;
-                        } catch(IOException ex) {
-                            System.err.printf("IOException occured\n");
-                        }
-                    }
-                });
-                openItem.setOnAction( e -> {
-                    //rescues the window
-                    //File chooser window ppops up
-                    //user chooses file
-                    //user hits cancel, do nothing
-                    //if user opens file, put in textarea and display path to file in title bar
-                    if(!windowContentsSaved) {
-                        rescueWindow();
-                    }
-                    FileChooser fc = new FileChooser();
-                    fc.setTitle("Open File");
-                    selectedFile = fc.showOpenDialog(primary);
-                    if(selectedFile != null) {
-                        primary.setTitle("Nitpad: " + selectedFile.getAbsolutePath());
-                        try {
-                            String s = hooverFile();
-                            ta.setText(s);
-                            windowContentsSaved = true;
-                        } catch (FileNotFoundException ex) {
-                            System.err.printf("File %s cannot be opened\n", selectedFile.getName());
-                        } catch(IOException ex) {
-                            System.err.printf("IOException occured\n");
-                        }
-                    }
-                });*/
-
-                MenuItem quitItem = new MenuItem("Quit");
-                quitItem.setOnAction( e -> Platform.exit());
-                mbar.getMenus().addAll(fileMenu, stickerMenu, sizeMenu);
-                sizeMenu.getItems().addAll(smallSize, mediumSize, largeSize, extraLargeSize);
-                fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
-                stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
+        MenuItem quitItem = new MenuItem("Quit");
+        quitItem.setOnAction( e -> Platform.exit());
+        mbar.getMenus().addAll(fileMenu, stickerMenu, sizeMenu, nukeMenu);
+        sizeMenu.getItems().addAll(smallSize, mediumSize, largeSize, extraLargeSize);
+        fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
+        stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
+        nukeMenu.getItems().addAll(nuke1, nuke2, nuke3, nuke4, nuke5);
     }
 
     @Override
