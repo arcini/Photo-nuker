@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -34,7 +35,7 @@ import java.util.OptionalInt;
 import java.io.Console;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import javafx.scene.effect.ColorAdjust;
 
 public class PhotoNuker extends Application
 {
@@ -75,6 +76,7 @@ public class PhotoNuker extends Application
         primary.setTitle("PhotoNuker Java Final Project");
         primary.show();
 
+
         c.setOnMouseClicked( e -> {
             if (windowContentsSaved) {
                 windowContentsSaved = false;
@@ -88,16 +90,32 @@ public class PhotoNuker extends Application
     }
 
     private void rescueWindow() {
-        
-    }
 
+    }
+    private void nuke(){
+
+      Image image = new Image(c);
+      ImageView imageview = new ImageView(image);
+      ColorAdjust colorAdjust = new ColorAdjust();
+      colorAdjust.setConrast(.4);
+      colorAdjust.setHue(-.5);
+      colorAdjust.setBrightness(.9);
+      colorAdjust.setSaturation(.5);
+      imageView.setEffect(colorAdjust);
+      Group root = new Group(imageview);
+      Scene scene = new Scene(root,c.setWidth,c.setHeight);
+      stage.setScene(scene);
+      stage.show();
+    }
     private void makeMenus() {
+
+
         Menu fileMenu = new Menu("File");
         MenuItem newItem = new MenuItem("New");
         MenuItem openItem = new MenuItem("Open...");
         MenuItem saveItem = new MenuItem("Save");
         MenuItem saveAsItem = new MenuItem("Save As...");
-
+        MenuItem filterItem = new MenuItem("Filters");
         newItem.setOnAction( e ->
         {
 
@@ -124,6 +142,11 @@ public class PhotoNuker extends Application
                 pen.drawImage(backgroundImg.get(), 0, 0, backgroundImg.get().getWidth(), backgroundImg.get().getHeight());
             }
         });
+        filterItem.setOnAction( e ->
+        {
+
+        });
+
 
 
 
