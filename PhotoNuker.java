@@ -88,7 +88,7 @@ public class PhotoNuker extends Application
     }
 
     private void rescueWindow() {
-
+        
     }
 
     private void makeMenus() {
@@ -116,7 +116,7 @@ public class PhotoNuker extends Application
             if(selectedFile != null)
             {
                 primary.setTitle("FileShower:" + selectedFile.getAbsolutePath());
-                String pathName = Paths.get(System.getProperty("java.class.path")).relativize(selectedFile.toPath()).toString();
+                String pathName = Paths.get(PhotoNuker.class.getProtectionDomain().getCodeSource().getLocation().getPath().relativize(selectedFile.toPath()).toString());
                 System.out.println(pathName);
                 Optional<Image> backgroundImg = Optional.of(new Image(getClass().getResourceAsStream(pathName)));
                 c.setWidth(backgroundImg.get().getWidth());
