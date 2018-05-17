@@ -16,7 +16,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -72,7 +72,7 @@ public class PhotoNuker extends Application
     public void start(Stage primary)
     {
         BorderPane bp = new BorderPane();
-        Pane centerPane = new Pane();
+        StackPane centerPane = new StackPane();
         bp.setTop(mbar);
         bp.setCenter(centerPane);
         c.setWidth(centerPane.getWidth());
@@ -112,8 +112,10 @@ public class PhotoNuker extends Application
 
     }
     private void nuke(){
+        //commenting to test other code
 
-      Image image = new Image(c);
+
+      /*Image image = new Image(c);
       ImageView imageview = new ImageView(image);
       ColorAdjust colorAdjust = new ColorAdjust();
       colorAdjust.setConrast(.4);
@@ -124,7 +126,7 @@ public class PhotoNuker extends Application
       Group root = new Group(imageview);
       Scene scene = new Scene(root,c.setWidth,c.setHeight);
       stage.setScene(scene);
-      stage.show();
+      stage.show();*/
     }
     private void makeMenus() {
 
@@ -156,7 +158,8 @@ public class PhotoNuker extends Application
                 try {
                     System.out.println(selectedFile.toURI().toURL().toString());
                     Optional<Image> backgroundImg = Optional.of(new Image(selectedFile.toURI().toURL().toString()));
-                    c = new Canvas(backgroundImg.get().getWidth(), backgroundImg.get().getHeight());
+                    c.setWidth(backgroundImg.get().getWidth());
+                    c.setHeight(backgroundImg.get().getHeight());
                     pen.clearRect(0, 0, c.getWidth(), c.getHeight());
                     pen.drawImage(backgroundImg.get(), 0, 0, backgroundImg.get().getWidth(), backgroundImg.get().getHeight());
                 } catch (MalformedURLException ex) {
