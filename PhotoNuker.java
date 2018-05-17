@@ -15,6 +15,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -34,6 +35,9 @@ import java.util.OptionalInt;
 import java.io.Console;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.net.MalformedURLException;
+import javafx.stage.Screen;
+import javafx.geometry.Rectangle2D;
 
 
 public class PhotoNuker extends Application
@@ -49,7 +53,7 @@ public class PhotoNuker extends Application
     public PhotoNuker()
     {
       mbar = new MenuBar();
-      c = new Canvas(800,800);
+      c = new Canvas(1000,1000);
       pen = c.getGraphicsContext2D();
       currentSize = OptionalInt.of(25);
       selectedFile = null;
@@ -66,13 +70,27 @@ public class PhotoNuker extends Application
     public void start(Stage primary)
     {
         BorderPane bp = new BorderPane();
+        Pane centerPane = new Pane();
         bp.setTop(mbar);
-        bp.setCenter(c);
+        bp.setCenter(centerPane);
+        c.setWidth(centerPane.getWidth());
+        c.setHeight(centerPane.getHeight());
+        centerPane.getChildren().add(c);
         makeMenus();
-        Scene s = new Scene(bp, 500, 500);
+
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        primary.setX(0);
+        primary.setY(0);
+        primary.setWidth(bounds.getWidth());
+        primary.setHeight(bounds.getHeight());
+
+        Scene s = new Scene(bp);
         this.primary = primary;
         primary.setScene(s);
         primary.setTitle("PhotoNuker Java Final Project");
+
         primary.show();
 
         c.setOnMouseClicked( e -> {
@@ -88,7 +106,7 @@ public class PhotoNuker extends Application
     }
 
     private void rescueWindow() {
-        
+
     }
 
     private void makeMenus() {
@@ -115,13 +133,17 @@ public class PhotoNuker extends Application
             selectedFile = fc.showOpenDialog(primary);
             if(selectedFile != null)
             {
-                primary.setTitle("FileShower:" + selectedFile.getAbsolutePath());
-                String pathName = Paths.get(PhotoNuker.class.getProtectionDomain().getCodeSource().getLocation().getPath().relativize(selectedFile.toPath()).toString());
-                System.out.println(pathName);
-                Optional<Image> backgroundImg = Optional.of(new Image(getClass().getResourceAsStream(pathName)));
-                c.setWidth(backgroundImg.get().getWidth());
-                c.setHeight(backgroundImg.get().getHeight());
-                pen.drawImage(backgroundImg.get(), 0, 0, backgroundImg.get().getWidth(), backgroundImg.get().getHeight());
+                primary.setTitle("FileShower: " + selectedFile.getAbsolutePath());
+                try {
+                    System.out.println(selectedFile.toURI().toURL().toString());
+                    Optional<Image> backgroundImg = Optional.of(new Image(selectedFile.toURI().toURL().toString()));
+                    c = new Canvas(backgroundImg.get().getWidth(), backgroundImg.get().getHeight());
+                    pen.clearRect(0, 0, c.getWidth(), c.getHeight());
+                    pen.drawImage(backgroundImg.get(), 0, 0, backgroundImg.get().getWidth(), backgroundImg.get().getHeight());
+                } catch (MalformedURLException ex) {
+                    ex.printStackTrace();
+                    System.out.println("malformed url");
+                }
             }
         });
 
