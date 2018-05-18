@@ -40,7 +40,14 @@ import javafx.scene.effect.ColorAdjust;
 import java.net.MalformedURLException;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
-
+import javafx.embed.swing.SwingFXUtils;
+import java.awt.image.BufferedImage;
+import javafx.scene.image.WritableImage;
+import java.awt.image.RenderedImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.io.ObjectInputStream;
 
 public class PhotoNuker extends Application
 {
@@ -52,6 +59,16 @@ public class PhotoNuker extends Application
     private GraphicsContext pen;
     private Stage primary;
     private File selectedFile;
+
+    //nuker variables
+    private RenderedImage renderedImage;
+    private WritableImage capture;
+    private Image image;
+    private ImageView imageview;
+    private ColorAdjust colorAdjust;
+    private File tempImage;
+    private Bitmap adjustedImage;
+
     public PhotoNuker()
     {
       mbar = new MenuBar();
@@ -112,21 +129,47 @@ public class PhotoNuker extends Application
 
     }
     private void nuke(int nukeLevel){
-        //commenting to test other code
+        for (int i = 0; i<nukeLevel; i++) {
+            try {
+                //create writableimage from canvas
+                capture = new WritableImage( (int) c.getWidth(), (int) c.getHeight());
+                c.snapshot(null, capture);
 
+                //convert to renderedimage
+                renderedImage = SwingFXUtils.fromFXImage(capture, null);
 
-      /*Image image = new Image(c);
-      ImageView imageview = new ImageView(image);
-      ColorAdjust colorAdjust = new ColorAdjust();
-      colorAdjust.setConrast(.4);
-      colorAdjust.setHue(-.5);
-      colorAdjust.setBrightness(.9);
-      colorAdjust.setSaturation(.5);
-      imageView.setEffect(colorAdjust);
-      Group root = new Group(imageview);
-      Scene scene = new Scene(root,c.setWidth,c.setHeight);
-      stage.setScene(scene);
-      stage.show();*/
+                //write to a file object
+                tempImage = File.createTempFile("oof", ".png");
+                ImageIO.write(renderedImage, ".png", tempImage);
+
+                //convert file object to image
+                image = new Image(tempImage.toURI().toURL().toString());
+
+                //apply effects
+                imageview = new ImageView(image);
+                colorAdjust = new ColorAdjust();
+                colorAdjust.setContrast(.4);
+                colorAdjust.setHue(-.5);
+                colorAdjust.setBrightness(.9);
+                colorAdjust.setSaturation(.5);
+                imageview.setEffect(colorAdjust);
+
+                //get new image
+                
+
+                //put on Canvas
+                c.setWidth(adjustedImage.getWidth());
+                c.setHeight(adjustedImage.getHeight());
+                pen.clearRect(0, 0, c.getWidth(), c.getHeight());
+                pen.drawImage(adjustedImage, 0, 0, adjustedImage.getWidth(), adjustedImage.getHeight());
+                System.out.println("painted effects");
+                tempImage.deleteOnExit();
+
+            } catch (IOException ex) {
+                System.out.println("IOException");
+                ex.printStackTrace();
+            }
+        }
     }
     private void makeMenus() {
 
@@ -268,31 +311,31 @@ public class PhotoNuker extends Application
         nuke1.setOnAction( e -> {
             nuke(1);
         });
-        nuke1.setAccelerator(new KeyCodeCombination(KeyCode.1, KeyCombination.CONTROL_DOWN));
+        nuke1.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT1, KeyCombination.CONTROL_DOWN));
 
         MenuItem nuke2 = new MenuItem("2");
         nuke2.setOnAction( e -> {
             nuke(2);
         });
-        nuke2.setAccelerator(new KeyCodeCombination(KeyCode.2, KeyCombination.CONTROL_DOWN));
+        nuke2.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT2, KeyCombination.CONTROL_DOWN));
 
         MenuItem nuke3 = new MenuItem("3");
         nuke3.setOnAction( e -> {
             nuke(3);
         });
-        nuke3.setAccelerator(new KeyCodeCombination(KeyCode.3, KeyCombination.CONTROL_DOWN));
+        nuke3.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT3, KeyCombination.CONTROL_DOWN));
 
         MenuItem nuke4 = new MenuItem("4");
         nuke4.setOnAction( e -> {
             nuke(4);
         });
-        nuke4.setAccelerator(new KeyCodeCombination(KeyCode.4, KeyCombination.CONTROL_DOWN));
+        nuke4.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT4, KeyCombination.CONTROL_DOWN));
 
         MenuItem nuke5 = new MenuItem("5");
         nuke5.setOnAction( e -> {
             nuke(5);
         });
-        nuke5.setAccelerator(new KeyCodeCombination(KeyCode.5, KeyCombination.CONTROL_DOWN));
+        nuke5.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT5, KeyCombination.CONTROL_DOWN));
 
         MenuItem quitItem = new MenuItem("Quit");
         quitItem.setOnAction( e -> Platform.exit());
