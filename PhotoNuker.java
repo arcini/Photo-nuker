@@ -52,6 +52,7 @@ import java.io.ObjectInputStream;
 public class PhotoNuker extends Application
 {
     private boolean windowContentsSaved;
+    StackPane centerPane;
     private Optional<Image> currentSticker;
     private OptionalInt currentSize;
     private MenuBar mbar;
@@ -60,14 +61,14 @@ public class PhotoNuker extends Application
     private Stage primary;
     private File selectedFile;
 
-    //nuker variables
+    //nuker objects
     private RenderedImage renderedImage;
     private WritableImage capture;
     private Image image;
     private ImageView imageview;
     private ColorAdjust colorAdjust;
     private File tempImage;
-    private Bitmap adjustedImage;
+
 
     public PhotoNuker()
     {
@@ -89,7 +90,7 @@ public class PhotoNuker extends Application
     public void start(Stage primary)
     {
         BorderPane bp = new BorderPane();
-        StackPane centerPane = new StackPane();
+        centerPane = new StackPane();
         bp.setTop(mbar);
         bp.setCenter(centerPane);
         c.setWidth(centerPane.getWidth());
@@ -134,17 +135,17 @@ public class PhotoNuker extends Application
                 //create writableimage from canvas
                 capture = new WritableImage( (int) c.getWidth(), (int) c.getHeight());
                 c.snapshot(null, capture);
-
+                System.out.println(capture);
                 //convert to renderedimage
                 renderedImage = SwingFXUtils.fromFXImage(capture, null);
-
+                System.out.println(renderedImage);
                 //write to a file object
                 tempImage = File.createTempFile("oof", ".png");
-                ImageIO.write(renderedImage, ".png", tempImage);
+                ImageIO.write(renderedImage, "png", tempImage);
 
                 //convert file object to image
                 image = new Image(tempImage.toURI().toURL().toString());
-
+                System.out.println(image);
                 //apply effects
                 imageview = new ImageView(image);
                 colorAdjust = new ColorAdjust();
@@ -154,15 +155,8 @@ public class PhotoNuker extends Application
                 colorAdjust.setSaturation(.5);
                 imageview.setEffect(colorAdjust);
 
-                //get new image
-                
-
-                //put on Canvas
-                c.setWidth(adjustedImage.getWidth());
-                c.setHeight(adjustedImage.getHeight());
-                pen.clearRect(0, 0, c.getWidth(), c.getHeight());
-                pen.drawImage(adjustedImage, 0, 0, adjustedImage.getWidth(), adjustedImage.getHeight());
-                System.out.println("painted effects");
+                //put on top of canvas
+                centerPane.getChildren().add(imageview);
                 tempImage.deleteOnExit();
 
             } catch (IOException ex) {
