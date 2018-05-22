@@ -156,7 +156,7 @@ public class PhotoNuker extends Application
                 imageview = new ImageView(image);
                 colorAdjust = new ColorAdjust();
                 colorAdjust.setContrast(.1*i);
-                colorAdjust.setHue(-.025*i);
+                colorAdjust.setHue(-.04*i);
                 colorAdjust.setBrightness(.1*i);
                 colorAdjust.setSaturation(.2*i);
                 imageview.setEffect(colorAdjust);
@@ -285,7 +285,9 @@ public class PhotoNuker extends Application
           currentSticker = Optional.of(new Image(getClass().getResourceAsStream("ok.png")));
         });
 
-
+        saveItem.setOnAction (e -> {
+            //https://gist.github.com/jewelsea/2870355
+        });
 
 
         Menu sizeMenu = new Menu("Size");
