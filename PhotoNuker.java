@@ -133,7 +133,21 @@ public class PhotoNuker extends Application
     }
 
     private void rescueWindow() {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setHeaderText("Save window contents?");
+        Optional<ButtonType> result = alert.showAndWait();
 
+        if(result.get() == ButtonType.OK) {
+            if(selectedFile == null) {
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Save File");
+                selectedFile = fc.showSaveDialog(primary);
+            } try {
+
+            } catch(IOException ex) {
+                System.err.printf("File %s cannot be opened.\n", selectedFile.getName());
+            }
+        }
     }
     private void nuke(int nukeLevel){ //TODO: Add noise
         for (int i = 0; i<nukeLevel; i++) {
@@ -182,7 +196,9 @@ public class PhotoNuker extends Application
 
         newItem.setOnAction( e ->
         {
-
+            if (c.getHeight() > 0.0) {
+                rescueWindow();
+            }
         });
 
         openItem.setOnAction( e ->
