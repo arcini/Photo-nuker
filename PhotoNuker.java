@@ -138,16 +138,18 @@ public class PhotoNuker extends Application
         Optional<ButtonType> result = alert.showAndWait();
 
         if(result.get() == ButtonType.OK) {
-            if(selectedFile == null) {
-                FileChooser fc = new FileChooser();
-                fc.setTitle("Save File");
-                selectedFile = fc.showSaveDialog(primary);
-            } try {
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Save file");
+            FileChooser.ExtensionFilter ext = new FileChooser.ExtensionFilter("Image file (*.png)", "*.png");
+            fc.getExtensionFilters().add(ext);
+            selectedFile = fc.showSaveDialog(primary);
 
-            } catch(IOException ex) {
-                System.err.printf("File %s cannot be opened.\n", selectedFile.getName());
+            try {
+              ImageIO.write(SwingFXUtils.fromFXImage(imageview.snapshot(null, null), null), "png", selectedFile);
+            } catch (IOException ex) {
+              System.err.printf("File cannot be opened.");
             }
-        }
+         });
     }
     private void nuke(int nukeLevel){ //TODO: Add noise
         for (int i = 0; i<nukeLevel; i++) {
@@ -198,6 +200,8 @@ public class PhotoNuker extends Application
         {
             if (c.getHeight() > 0.0) {
                 rescueWindow();
+                centerPane.getChildren().removeAll(imageview);
+                pen.clearRect(0, 0, c.getWidth(), c.getHeight());
             }
         });
         newItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
