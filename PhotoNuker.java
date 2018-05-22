@@ -153,6 +153,7 @@ public class PhotoNuker extends Application
                 image = new Image(tempImage.toURI().toURL().toString());
                 //apply effects
                 image = addNoise(image);
+                image = addNoise(image);
                 imageview = new ImageView(image);
                 colorAdjust = new ColorAdjust();
                 colorAdjust.setContrast(.1*i);
@@ -177,8 +178,7 @@ public class PhotoNuker extends Application
         Menu fileMenu = new Menu("File");
         MenuItem newItem = new MenuItem("New");
         MenuItem openItem = new MenuItem("Open...");
-        MenuItem saveItem = new MenuItem("Save");
-        MenuItem saveAsItem = new MenuItem("Save As...");
+        MenuItem saveItem = new MenuItem("Save...");
 
         newItem.setOnAction( e ->
         {
@@ -287,7 +287,18 @@ public class PhotoNuker extends Application
 
         saveItem.setOnAction (e -> {
             //https://gist.github.com/jewelsea/2870355
-        });
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Save file");
+            FileChooser.ExtensionFilter ext = new FileChooser.ExtensionFilter("Image file (*.png)", "*.png");
+            fc.getExtensionFilters().add(ext);
+            selectedFile = fc.showSaveDialog(primary);
+
+            try {
+              ImageIO.write(SwingFXUtils.fromFXImage(imageview.snapshot(null, null), null), "png", selectedFile);
+            } catch (IOException ex) {
+              System.err.printf("File cannot be opened.");
+            }
+          });
 
 
         Menu sizeMenu = new Menu("Size");
@@ -346,7 +357,7 @@ public class PhotoNuker extends Application
         quitItem.setOnAction( e -> Platform.exit());
         mbar.getMenus().addAll(fileMenu, stickerMenu, sizeMenu, nukeMenu);
         sizeMenu.getItems().addAll(smallSize, mediumSize, largeSize, extraLargeSize);
-        fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
+        fileMenu.getItems().addAll(newItem, openItem, saveItem, quitItem);
         stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
         nukeMenu.getItems().addAll(nuke1, nuke2, nuke3, nuke4, nuke5);
     }
