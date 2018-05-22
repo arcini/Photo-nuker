@@ -48,6 +48,9 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.io.ObjectInputStream;
+import javafx.scene.paint.Color;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
 
 
 
@@ -80,6 +83,7 @@ public class PhotoNuker extends Application
       currentSize = OptionalInt.of(25);
       selectedFile = null;
       windowContentsSaved = true;
+      imageview = new ImageView(image);
     }
 
 
@@ -92,12 +96,13 @@ public class PhotoNuker extends Application
     public void start(Stage primary)
     {
         BorderPane bp = new BorderPane();
+
         centerPane = new StackPane();
-        bp.setTop(mbar);
-        bp.setCenter(centerPane);
         c.setWidth(centerPane.getWidth());
         c.setHeight(centerPane.getHeight());
-        centerPane.getChildren().add(c);
+        centerPane.getChildren().addAll(c, imageview);
+        bp.setTop(mbar);
+        bp.setCenter(centerPane);
         makeMenus();
 
         Screen screen = Screen.getPrimary();
@@ -122,7 +127,6 @@ public class PhotoNuker extends Application
             }
 
             if(currentSticker!=null && currentSticker.isPresent()) {
-              System.out.println("pen="+pen);
                 pen.drawImage(currentSticker.get(),0,0,currentSticker.get().getWidth(),currentSticker.get().getWidth(),e.getX()-currentSize.getAsInt()/2, e.getY()-currentSize.getAsInt()/2,currentSize.getAsInt(),currentSize.getAsInt());
             }
         });
@@ -131,30 +135,30 @@ public class PhotoNuker extends Application
     private void rescueWindow() {
 
     }
-    private void nuke(int nukeLevel){
+    private void nuke(int nukeLevel){ //TODO: Add noise
         for (int i = 0; i<nukeLevel; i++) {
             try {
+                centerPane.getChildren().removeAll(imageview);
                 //create writableimage from canvas
                 capture = new WritableImage( (int) c.getWidth(), (int) c.getHeight());
                 c.snapshot(null, capture);
                 System.out.println(capture);
                 //convert to renderedimage
                 renderedImage = SwingFXUtils.fromFXImage(capture, null);
-                System.out.println(renderedImage);
                 //write to a file object
                 tempImage = File.createTempFile("oof", ".png");
                 ImageIO.write(renderedImage, "png", tempImage);
 
                 //convert file object to image
                 image = new Image(tempImage.toURI().toURL().toString());
-                System.out.println(image);
                 //apply effects
+                image = addNoise(image);
                 imageview = new ImageView(image);
                 colorAdjust = new ColorAdjust();
-                colorAdjust.setContrast(.4);
-                colorAdjust.setHue(-.5);
-                colorAdjust.setBrightness(.9);
-                colorAdjust.setSaturation(.5);
+                colorAdjust.setContrast(.1*i);
+                colorAdjust.setHue(-.025*i);
+                colorAdjust.setBrightness(.1*i);
+                colorAdjust.setSaturation(.2*i);
                 imageview.setEffect(colorAdjust);
 
                 //put on top of canvas
@@ -183,6 +187,9 @@ public class PhotoNuker extends Application
 
         openItem.setOnAction( e ->
         {
+            //remove ImageView
+            centerPane.getChildren().removeAll(imageview);
+
             //File chooser window pops up
             FileChooser fc = new FileChooser();
             fc.setTitle("Open File");
@@ -272,7 +279,7 @@ public class PhotoNuker extends Application
         openView.setFitHeight(15);
         MenuItem  OItem = new MenuItem("");
         OItem.setGraphic(openView);
-        OItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+        OItem.setAccelerator(new KeyCodeCombination(KeyCode.K, KeyCombination.CONTROL_DOWN));
 
         OItem.setOnAction( e -> {
           currentSticker = Optional.of(new Image(getClass().getResourceAsStream("ok.png")));
@@ -340,6 +347,45 @@ public class PhotoNuker extends Application
         fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, quitItem);
         stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
         nukeMenu.getItems().addAll(nuke1, nuke2, nuke3, nuke4, nuke5);
+    }
+    private Image addNoise(Image sourceImage) { //thanks to YOUTUBE: Almas Baimagambetov
+        Image realFinal = null;
+        try {
+            PixelReader pxRead = sourceImage.getPixelReader();
+
+            int w = (int) sourceImage.getWidth();
+            int h = (int) sourceImage.getHeight();
+
+            WritableImage finalImage = new WritableImage(w, h);
+            PixelWriter pxWrite = finalImage.getPixelWriter();
+
+            for (int y=0; y<h ; y++) {
+                for (int x=0; x<w; x++) {
+                    Color color = pxRead.getColor(x, y);
+
+                    double noise = Math.random() / 7;
+                    Color newColor = new Color(
+                        Math.min(color.getRed() + noise, 1),
+                        Math.min(color.getGreen() + noise, 1),
+                        Math.min(color.getBlue() + noise, 1),
+                        1);
+                    pxWrite.setColor(x, y, newColor);
+                }
+            }
+
+            RenderedImage finalRender = SwingFXUtils.fromFXImage(finalImage, null);
+            //write to a file object
+            tempImage = File.createTempFile("final", ".png");
+            ImageIO.write(finalRender, "png", tempImage);
+
+            //convert file object to image
+            realFinal = new Image(tempImage.toURI().toURL().toString());
+        } catch (IOException ex) {
+            System.out.println("IOException");
+            ex.printStackTrace();
+        }
+
+        return realFinal;
     }
 
     @Override
