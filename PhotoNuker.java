@@ -200,6 +200,7 @@ public class PhotoNuker extends Application
                 rescueWindow();
             }
         });
+        newItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
 
         openItem.setOnAction( e ->
         {
@@ -230,6 +231,7 @@ public class PhotoNuker extends Application
                 }
             }
         });
+        openItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 
 
 
@@ -315,6 +317,7 @@ public class PhotoNuker extends Application
               System.err.printf("File cannot be opened.");
             }
           });
+          saveItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 
 
         Menu sizeMenu = new Menu("Size");
