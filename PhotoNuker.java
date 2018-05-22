@@ -49,6 +49,8 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.io.ObjectInputStream;
 
+
+
 public class PhotoNuker extends Application
 {
     private boolean windowContentsSaved;
