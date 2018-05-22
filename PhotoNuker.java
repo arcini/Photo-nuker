@@ -149,7 +149,7 @@ public class PhotoNuker extends Application
             } catch (IOException ex) {
               System.err.printf("File cannot be opened.");
             }
-         });
+         }
     }
     private void nuke(int nukeLevel){ //TODO: Add noise
         for (int i = 0; i<nukeLevel; i++) {
@@ -173,7 +173,7 @@ public class PhotoNuker extends Application
                 imageview = new ImageView(image);
                 colorAdjust = new ColorAdjust();
                 colorAdjust.setContrast(.1*i);
-                colorAdjust.setHue(-.04*i);
+                colorAdjust.setHue(-.02*i);
                 colorAdjust.setBrightness(.1*i);
                 colorAdjust.setSaturation(.2*i);
                 imageview.setEffect(colorAdjust);
@@ -210,7 +210,9 @@ public class PhotoNuker extends Application
         {
             //remove ImageView
             centerPane.getChildren().removeAll(imageview);
-
+            if (c.getHeight() > 0.0) {
+                rescueWindow();
+            }
             //File chooser window pops up
             FileChooser fc = new FileChooser();
             fc.setTitle("Open File");
@@ -376,13 +378,18 @@ public class PhotoNuker extends Application
         });
         nuke5.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT5, KeyCombination.CONTROL_DOWN));
 
+        MenuItem clearNuke = new MenuItem("Clear nukage");
+        clearNuke.setOnAction( e -> {
+            centerPane.getChildren().removeAll(imageview);
+        });
+
         MenuItem quitItem = new MenuItem("Quit");
         quitItem.setOnAction( e -> Platform.exit());
         mbar.getMenus().addAll(fileMenu, stickerMenu, sizeMenu, nukeMenu);
         sizeMenu.getItems().addAll(smallSize, mediumSize, largeSize, extraLargeSize);
         fileMenu.getItems().addAll(newItem, openItem, saveItem, quitItem);
         stickerMenu.getItems().addAll(bItem, fItem, hundredItem, lItem, OItem);
-        nukeMenu.getItems().addAll(nuke1, nuke2, nuke3, nuke4, nuke5);
+        nukeMenu.getItems().addAll(nuke1, nuke2, nuke3, nuke4, nuke5, clearNuke);
     }
     private Image addNoise(Image sourceImage) { //thanks to YOUTUBE: Almas Baimagambetov
         Image realFinal = null;
